@@ -3,7 +3,7 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from file_toc import handle_file_toc
+from file_toc import handle_file_toc, handle_summary_toc
 from header import Header
 from parse_headers import parse_headers_from_file
 
@@ -11,11 +11,14 @@ from parse_headers import parse_headers_from_file
 def main():
     args = parse_arguments()
     root = args.root.absolute()
-    normalized_excludes = {normalize(root, path) for path in args.exclude}
+    normalized_excludes = get_all_excludes(root, args.exclude, args.summary_path)
     notes_paths = get_all_notes_paths(root, normalized_excludes)
     notes_paths.sort(key=lambda path: (len(path.parents), path))
     header_data = parse_all_headers(notes_paths)
     handle_file_toc(header_data, args.skip, args.take, args.in_place)
+    handle_summary_toc(
+        header_data, args.skip, args.take, args.in_place, args.summary_path, args.summary_header
+    )
 
 
 def parse_arguments() -> Namespace:
@@ -25,11 +28,17 @@ def parse_arguments() -> Namespace:
     parser.add_argument("-i", "--in-place", action="store_true")
     parser.add_argument("-s", "--skip", type=int, default=0)
     parser.add_argument("-t", "--take", type=int, default=0)
+    parser.add_argument("--summary-path", type=Path)
+    parser.add_argument("--summary-header", type=str, default="Summary")
     return parser.parse_args()
 
 
 def normalize(root: Path, path: Path) -> Path:
     return path.absolute().relative_to(root)
+
+
+def get_all_excludes(root: Path, exclude: list[Path], readme: Path | None) -> set[Path]:
+    return {normalize(root, path) for path in exclude + [readme] if path}
 
 
 def get_all_notes_paths(root: Path, exclude: set[Path]) -> list[Path]:
