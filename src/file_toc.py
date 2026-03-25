@@ -32,7 +32,7 @@ def handle_summary_toc(
     all_paths = {path for full_path in header_data for path in full_path.parents[:-1]}
     all_paths = sorted(all_paths, key=lambda path: (path, len(path.parents)))
     header_data_per_directory = {
-        group[0]: list(values)
+        group[0]: dict(values).values()
         for group, values in groupby(header_data.items(), lambda item: item[0].parents[:-1])
     }
     expanded_header_data = {path: header_data_per_directory.get(path, []) for path in all_paths}
@@ -40,8 +40,10 @@ def handle_summary_toc(
     for dir_path, dir_headers in expanded_header_data.items():
         level = 2
         toc += format_path_header(dir_path, level)
-        for file_path, file_headers in dir_headers:
-            toc += format_path_header(file_path, level + 1)
+        for file_headers in dir_headers:
+            # toc += format_path_header(file_path, level + 1)
+            first_header = file_headers[0]
+            toc += f"{'#' * (level + 1)}{first_header.str(0, False)[1:]}{linesep * 2}"
             toc += format_headers(file_headers, skip, take, False)
             toc += linesep * 2
     if in_place and target_path and target_path.is_file():

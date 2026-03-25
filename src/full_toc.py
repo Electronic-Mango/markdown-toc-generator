@@ -16,9 +16,7 @@ def main():
     notes_paths.sort(key=lambda path: (len(path.parents), path))
     header_data = parse_all_headers(notes_paths)
     handle_file_toc(header_data, args.skip, args.take, args.in_place)
-    handle_summary_toc(
-        header_data, args.skip, args.take, args.in_place, args.summary_path, args.summary_header
-    )
+    handle_summary_toc(header_data, 1, 1, args.in_place, args.summary_path, args.summary_header)
 
 
 def parse_arguments() -> Namespace:
