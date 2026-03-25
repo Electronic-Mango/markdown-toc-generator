@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
 from itertools import groupby
-from os import linesep
 from pathlib import Path
 
 from file_toc import insert_toc
-from format_headers import format_headers
 from header import Header
 from parse_headers import parse_headers_from_file
 
@@ -35,21 +33,21 @@ def get_all_notes_paths() -> list[Path]:
     ]
 
 
-def parse_headers_from_all_notes(notes_paths: list[Path]) -> dict[Path, Header]:
+def parse_headers_from_all_notes(notes_paths: list[Path]) -> dict[Path, list[Header]]:
     return {path: parse_headers_from_file(NOTES_ROOT_PATH, path) for path in notes_paths}
 
 
-def update_toc_in_notes(header_data: dict[Path, Header]) -> None:
+def update_toc_in_notes(header_data: dict[Path, list[Header]]) -> None:
     for path, headers in header_data.items():
         insert_toc(path, headers)
 
 
-def update_toc_in_readme(header_data: dict[Path, Header]) -> None:
+def update_toc_in_readme(header_data: dict[Path, list[Header]]) -> None:
     readme_headers = prepare_readme_headers(header_data)
-    insert_toc(README_PATH, readme_headers, skip_level=0, section_only=False)
+    insert_toc(README_PATH, readme_headers, skip=0, section_only=False)
 
 
-def prepare_readme_headers(header_data: dict[Path, Header]) -> list[Header]:
+def prepare_readme_headers(header_data: dict[Path, list[Header]]) -> list[Header]:
     headers = [header for _, headers in sorted(header_data.items()) for header in headers]
     headers_grouped_by_parent = group_headers_by_file_parents(headers)
     return [header for header_group in headers_grouped_by_parent for header in header_group]

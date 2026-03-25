@@ -8,8 +8,8 @@ from header import Header
 TOC_REGEX = r"^(#[^#].+)$(\s*-.+\n)*\s*"
 
 
-def insert_toc(path: Path, headers: list[Header], skip_level: int = 1, section_only: bool = True) -> None:
-    if not headers or not (new_toc := format_headers(headers, skip_level, section_only)):
+def insert_toc(path: Path, headers: list[Header], skip: int = 1, section_only: bool = True) -> None:
+    if not headers or not (new_toc := format_headers(headers, skip, section_only)):
         print(f"No changes made to: {path}")
         return
     with open(path, "r") as file:

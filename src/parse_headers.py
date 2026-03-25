@@ -27,7 +27,7 @@ def get_all_headers(lines: list[str]) -> list[tuple[int, str]]:
     return headers
 
 
-def create_header_link(root: Path, path: Path, name: str) -> str:
+def create_header_link(root: Path, path: Path, name: str) -> tuple[Path, str]:
     file_link = path.relative_to(root)
     section_link = sub(r"[^0-9a-z-_ ]", "", name.lower()).replace(" ", "-")
     return file_link, f"#{section_link}"
