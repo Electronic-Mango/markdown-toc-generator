@@ -21,7 +21,7 @@ def main():
 
 def parse_arguments() -> Namespace:
     parser = ArgumentParser()
-    parser.add_argument("-r", "--root", type=Path, required=True)
+    parser.add_argument("-r", "--root", type=Path, required=True, default=Path())
     parser.add_argument("-e", "--exclude", type=Path, nargs="*")
     parser.add_argument("--readme", type=Path)
     return parser.parse_args()
