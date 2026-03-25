@@ -7,7 +7,7 @@ HEADER_REGEX = r"^(#+) (.+)"
 CODE_BLOCK_REGEX = r"^```"
 
 
-def parse_headers_from_file(root: Path, path: Path) -> list[Header]:
+def parse_headers_from_file(path: Path) -> list[Header]:
     with open(path, "r") as file:
         text = file.readlines()
     headers = get_all_headers(text)
