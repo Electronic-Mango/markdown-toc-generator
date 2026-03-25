@@ -12,11 +12,12 @@ def main():
     args = parse_arguments()
     root = args.root.absolute()
     normalized_excludes = get_all_excludes(root, args.exclude, args.summary_path)
+    in_place = verify_in_place(args.in_place, args.force)
     notes_paths = get_all_notes_paths(root, normalized_excludes)
     notes_paths.sort(key=lambda path: (len(path.parents), path))
     header_data = parse_all_headers(notes_paths)
-    handle_file_toc(header_data, args.skip, args.take, args.in_place)
-    handle_summary_toc(header_data, 1, 1, args.in_place, args.summary_path, args.summary_header)
+    handle_file_toc(header_data, args.skip, args.take, in_place)
+    handle_summary_toc(header_data, 1, 1, in_place, args.summary_path, args.summary_header)
 
 
 def parse_arguments() -> Namespace:
@@ -24,6 +25,7 @@ def parse_arguments() -> Namespace:
     parser.add_argument("-r", "--root", type=Path, default=Path())
     parser.add_argument("-e", "--exclude", type=Path, nargs="*", default=[])
     parser.add_argument("-i", "--in-place", action="store_true")
+    parser.add_argument("-f", "--force", action="store_true")
     parser.add_argument("-s", "--skip", type=int, default=0)
     parser.add_argument("-t", "--take", type=int, default=0)
     parser.add_argument("--summary-path", type=Path)
@@ -37,6 +39,15 @@ def normalize(root: Path, path: Path) -> Path:
 
 def get_all_excludes(root: Path, exclude: list[Path], readme: Path | None) -> set[Path]:
     return {normalize(root, path) for path in exclude + [readme] if path}
+
+
+def verify_in_place(in_place: bool, force: bool) -> bool:
+    if not in_place or force:
+        return in_place
+    return input(
+        "Changing files in-place can lead to data loss, use at your own risk. "
+        "Continue with changes in-place? [y/n] "
+    ).lower() in ("y", "yes")
 
 
 def get_all_notes_paths(root: Path, exclude: set[Path]) -> list[Path]:
