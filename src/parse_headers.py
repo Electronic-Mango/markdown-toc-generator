@@ -11,7 +11,7 @@ def parse_headers_from_file(root: Path, path: Path) -> list[Header]:
     with open(path, "r") as file:
         text = file.readlines()
     headers = get_all_headers(text)
-    return [Header(level, name, *create_header_link(root, path, name)) for level, name in headers]
+    return [Header(level, name, path, create_section_link(name)) for level, name in headers]
 
 
 def get_all_headers(lines: list[str]) -> list[tuple[int, str]]:
@@ -27,7 +27,6 @@ def get_all_headers(lines: list[str]) -> list[tuple[int, str]]:
     return headers
 
 
-def create_header_link(root: Path, path: Path, name: str) -> tuple[Path, str]:
-    file_link = path.relative_to(root)
+def create_section_link(name: str) -> str:
     section_link = sub(r"[^0-9a-z-_ ]", "", name.lower()).replace(" ", "-")
-    return file_link, f"#{section_link}"
+    return f"#{section_link}"

@@ -6,12 +6,12 @@ from urllib.parse import quote
 class Header(NamedTuple):
     level: int
     name: str
-    relative_path: Path
+    path: Path
     section_link: str
 
     @property
     def file_link(self) -> str:
-        return quote(f"./{self.relative_path}")
+        return quote(f"./{self.path}")
 
     def str(self, skip: int, section_only: bool) -> str:
         list_prefix = " " * (self.level - skip - 1) * 2
