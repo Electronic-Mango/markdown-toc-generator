@@ -14,10 +14,9 @@ def main():
     root = args.root.absolute()
     normalized_excludes = {normalize(root, path) for path in args.exclude}
     notes_paths = get_all_notes_paths(root, normalized_excludes)
-    notes_paths.sort()
-    notes_paths.sort(key=lambda path: len(path.parents))
+    notes_paths.sort(key=lambda path: (len(path.parents), path))
     header_data = parse_headers_from_all_notes(notes_paths)
-    update_toc_in_files(header_data, args.in_place)
+    update_toc_in_files(header_data, args.skip, args.in_place)
 
 
 def parse_arguments() -> Namespace:
@@ -25,6 +24,7 @@ def parse_arguments() -> Namespace:
     parser.add_argument("-r", "--root", type=Path, default=Path())
     parser.add_argument("-e", "--exclude", type=Path, nargs="*", default=[])
     parser.add_argument("-i", "--in-place", action="store_true")
+    parser.add_argument("-s", "--skip", type=int, default=0)
     return parser.parse_args()
 
 
@@ -48,9 +48,9 @@ def parse_headers_from_all_notes(notes_paths: list[Path]) -> dict[Path, list[Hea
     return {path: parse_headers_from_file(path) for path in notes_paths}
 
 
-def update_toc_in_files(header_data: dict[Path, list[Header]], in_place: bool) -> None:
+def update_toc_in_files(header_data: dict[Path, list[Header]], skip: int, in_place: bool) -> None:
     for path, headers in header_data.items():
-        if not (toc := format_headers(headers, skip=1, section_only=True)):
+        if not (toc := format_headers(headers, skip=skip, section_only=True)):
             continue
         if in_place:
             insert_toc(path, toc)
