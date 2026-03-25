@@ -7,7 +7,7 @@ from file_toc import insert_toc
 from header import Header
 from parse_headers import parse_headers_from_file
 
-NOTES_ROOT_PATH = Path(__file__).parent.parent
+NOTES_ROOT_PATH = Path(__file__).parent.parent.parent.parent
 README_PATH = NOTES_ROOT_PATH / "README.md"
 EXCLUDED_PATHS = [
     NOTES_ROOT_PATH / ".scripts",
@@ -26,7 +26,7 @@ def get_all_notes_paths() -> list[Path]:
     return [
         path
         for path in NOTES_ROOT_PATH.rglob("*.md")
-        if not any(excluded_path not in path.parents for excluded_path in EXCLUDED_PATHS)
+        if not any(excluded == path or excluded in path.parents for excluded in EXCLUDED_PATHS)
     ]
 
 
