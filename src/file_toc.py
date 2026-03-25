@@ -2,7 +2,6 @@ from os import linesep
 from pathlib import Path
 from re import MULTILINE, sub
 
-from format_headers import format_headers
 from header import Header
 
 TOC_REGEX = r"^(#[^#].+)$(\s*-.+\n)*\s*"
@@ -23,3 +22,17 @@ def insert_toc(path: Path, headers: list[Header], skip: int = 1, section_only: b
     new_text = sub(TOC_REGEX, sub_regex, text, count=1, flags=MULTILINE)
     with open(path, "w") as file:
         file.write(new_text)
+
+
+def format_headers(headers: list[Header], skip_level: int, section_only: bool) -> str:
+    return linesep.join(
+        format_single_header(header, skip_level, section_only)
+        for header in headers
+        if header.level > skip_level
+    )
+
+
+def format_single_header(header: Header, skip_level: int, section_only: bool) -> str:
+    list_prefix = " " * (header.level - skip_level - 1) * 2
+    file_link = header.file_link if not section_only else ""
+    return f"{list_prefix}- [{header.name}]({file_link}{header.section_link})"
