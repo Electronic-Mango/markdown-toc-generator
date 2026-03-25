@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from argparse import ArgumentParser, Namespace
 from itertools import groupby
 from pathlib import Path
 
@@ -7,31 +8,43 @@ from file_toc import insert_toc
 from header import Header
 from parse_headers import parse_headers_from_file
 
-NOTES_ROOT_PATH = Path(__file__).parent.parent.parent.parent
-README_PATH = NOTES_ROOT_PATH / "README.md"
-EXCLUDED_PATHS = [
-    NOTES_ROOT_PATH / ".scripts",
-    README_PATH,
-]
-
 
 def main():
-    notes_paths = get_all_notes_paths()
-    header_data = parse_headers_from_all_notes(notes_paths)
+    args = parse_arguments()
+    notes_paths = get_all_notes_paths(args.root, args.exclude, args.readme)
+    header_data = parse_headers_from_all_notes(args.root, notes_paths)
+    print("Updating notes...")
     update_toc_in_notes(header_data)
-    update_toc_in_readme(header_data)
+    print("Updating README.md")
+    update_toc_in_readme(header_data, args.readme or args.root / "README.md")
 
 
-def get_all_notes_paths() -> list[Path]:
+def parse_arguments() -> Namespace:
+    parser = ArgumentParser()
+    parser.add_argument("-r", "--root", type=Path, required=True)
+    parser.add_argument("-e", "--exclude", type=Path, nargs="*")
+    parser.add_argument("--readme", type=Path)
+    return parser.parse_args()
+
+
+def get_all_notes_paths(root: Path, excluded_paths: list[Path], readme: Path | None) -> list[Path]:
     return [
         path
-        for path in NOTES_ROOT_PATH.rglob("*.md")
-        if not any(excluded == path or excluded in path.parents for excluded in EXCLUDED_PATHS)
+        for path in root.rglob("*.md")
+        if not any(
+            check_excluded_path(path, excluded.absolute())
+            for excluded in set(excluded_paths + [readme])
+            if excluded
+        )
     ]
 
 
-def parse_headers_from_all_notes(notes_paths: list[Path]) -> dict[Path, list[Header]]:
-    return {path: parse_headers_from_file(NOTES_ROOT_PATH, path) for path in notes_paths}
+def check_excluded_path(path: Path, excluded: Path) -> bool:
+    return path == excluded if excluded.is_file() else excluded in path.parents
+
+
+def parse_headers_from_all_notes(root: Path, notes_paths: list[Path]) -> dict[Path, list[Header]]:
+    return {path: parse_headers_from_file(root, path) for path in notes_paths}
 
 
 def update_toc_in_notes(header_data: dict[Path, list[Header]]) -> None:
@@ -39,9 +52,9 @@ def update_toc_in_notes(header_data: dict[Path, list[Header]]) -> None:
         insert_toc(path, headers)
 
 
-def update_toc_in_readme(header_data: dict[Path, list[Header]]) -> None:
+def update_toc_in_readme(header_data: dict[Path, list[Header]], readme_path: Path) -> None:
     readme_headers = prepare_readme_headers(header_data)
-    insert_toc(README_PATH, readme_headers, skip=0, section_only=False)
+    insert_toc(readme_path, readme_headers, skip=0, section_only=False)
 
 
 def prepare_readme_headers(header_data: dict[Path, list[Header]]) -> list[Header]:
