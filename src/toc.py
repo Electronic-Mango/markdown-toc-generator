@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
-from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from file_toc import handle_file_toc, handle_summary_toc
+from arguments import parse_arguments
 from header import Header
+from output_toc import handle_file_toc, handle_summary_toc
 from parse_headers import parse_headers_from_file
-
-TOC_REGEX = r"^(#[^#].+)$(\s*-.+\n)*\s*"
 
 
 def main():
@@ -21,21 +19,6 @@ def main():
     handle_file_toc(header_data, args.skip, args.take, in_place, args.toc_regex)
     if args.summary or args.summary_path:
         handle_summary_toc(header_data, 1, 1, in_place, args.summary_path, args.summary_header)
-
-
-def parse_arguments() -> Namespace:
-    parser = ArgumentParser()
-    parser.add_argument("-r", "--root", type=Path, default=Path())
-    parser.add_argument("-e", "--exclude", type=Path, nargs="*", default=[])
-    parser.add_argument("-i", "--in-place", action="store_true")
-    parser.add_argument("-f", "--force", action="store_true")
-    parser.add_argument("-s", "--skip", type=int, default=0)
-    parser.add_argument("-t", "--take", type=int, default=0)
-    parser.add_argument("--toc-regex", default=TOC_REGEX)
-    parser.add_argument("--summary", action="store_true")
-    parser.add_argument("--summary-path", type=Path)
-    parser.add_argument("--summary-header", type=str, default="Summary")
-    return parser.parse_args()
 
 
 def normalize(root: Path, path: Path) -> Path:
