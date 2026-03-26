@@ -7,6 +7,8 @@ from file_toc import handle_file_toc, handle_summary_toc
 from header import Header
 from parse_headers import parse_headers_from_file
 
+TOC_REGEX = r"^(#[^#].+)$(\s*-.+\n)*\s*"
+
 
 def main():
     args = parse_arguments()
@@ -16,7 +18,7 @@ def main():
     notes_paths = get_all_notes_paths(root, normalized_excludes)
     notes_paths.sort(key=lambda path: (len(path.parents), path))
     header_data = parse_all_headers(notes_paths)
-    handle_file_toc(header_data, args.skip, args.take, in_place)
+    handle_file_toc(header_data, args.skip, args.take, in_place, args.toc_regex)
     if args.summary or args.summary_path:
         handle_summary_toc(header_data, 1, 1, in_place, args.summary_path, args.summary_header)
 
@@ -29,6 +31,7 @@ def parse_arguments() -> Namespace:
     parser.add_argument("-f", "--force", action="store_true")
     parser.add_argument("-s", "--skip", type=int, default=0)
     parser.add_argument("-t", "--take", type=int, default=0)
+    parser.add_argument("--toc-regex", default=TOC_REGEX)
     parser.add_argument("--summary", action="store_true")
     parser.add_argument("--summary-path", type=Path)
     parser.add_argument("--summary-header", type=str, default="Summary")

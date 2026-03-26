@@ -6,17 +6,15 @@ from urllib.parse import quote
 
 from header import Header
 
-TOC_REGEX = r"^(#[^#].+)$(\s*-.+\n)*\s*"
-
 
 def handle_file_toc(
-    header_data: dict[Path, list[Header]], skip: int, take: int, in_place: bool
+    header_data: dict[Path, list[Header]], skip: int, take: int, in_place: bool, toc_regex: str
 ) -> None:
     for path, headers in header_data.items():
         if not (toc := format_headers(headers, skip, take, True)):
             continue
         if in_place:
-            insert_toc(path, toc)
+            insert_toc(path, toc, toc_regex)
         else:
             print(f"{path}:{linesep}{toc}{linesep}")
 
@@ -66,7 +64,7 @@ def level_in_range(level: int, skip: int, take: int) -> bool:
     return (level > skip and level <= (take + skip)) if take else (level > skip)
 
 
-def insert_toc(path: Path, toc: str) -> None:
+def insert_toc(path: Path, toc: str, toc_regex: str) -> None:
     toc = (linesep * 2) + toc + (linesep * 3)
     with open(path, "r") as file:
         text = file.read()
@@ -75,7 +73,7 @@ def insert_toc(path: Path, toc: str) -> None:
         return
     print(f"Updating ToC in: {path}")
     sub_regex = rf"\1{toc}"
-    new_text = sub(TOC_REGEX, sub_regex, text, count=1, flags=MULTILINE)
+    new_text = sub(toc_regex, sub_regex, text, count=1, flags=MULTILINE)
     with open(path, "w") as file:
         file.write(new_text)
 
