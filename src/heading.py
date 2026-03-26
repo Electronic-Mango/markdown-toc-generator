@@ -3,7 +3,7 @@ from typing import NamedTuple
 from urllib.parse import quote
 
 
-class Header(NamedTuple):
+class Heading(NamedTuple):
     level: int
     name: str
     path: Path

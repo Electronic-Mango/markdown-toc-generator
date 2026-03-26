@@ -4,14 +4,14 @@ from pathlib import Path
 from re import MULTILINE, sub
 from urllib.parse import quote
 
-from header import Header
+from heading import Heading
 
 
 def handle_file_toc(
-    header_data: dict[Path, list[Header]], skip: int, take: int, in_place: bool, toc_regex: str
+    heading_data: dict[Path, list[Heading]], skip: int, take: int, in_place: bool, toc_regex: str
 ) -> None:
-    for path, headers in header_data.items():
-        if not (toc := format_headers(headers, skip, take, True)):
+    for path, headings in heading_data.items():
+        if not (toc := format_headings(headings, skip, take, True)):
             continue
         if in_place:
             insert_toc(path, toc, toc_regex)
@@ -20,43 +20,43 @@ def handle_file_toc(
 
 
 def handle_summary_toc(
-    header_data: dict[Path, list[Header]],
+    heading_data: dict[Path, list[Heading]],
     skip: int,
     take: int,
     in_place: bool,
     target_path: Path | None,
-    main_header: str,
+    main_heading: str,
 ) -> None:
-    all_paths = {path for full_path in header_data for path in full_path.parents[:-1]}
+    all_paths = {path for full_path in heading_data for path in full_path.parents[:-1]}
     all_paths = sorted(all_paths, key=lambda path: (path, len(path.parents)))
-    header_data_per_directory = {
+    heading_data_per_directory = {
         group[0]: dict(values).values()
-        for group, values in groupby(header_data.items(), lambda item: item[0].parents[:-1])
+        for group, values in groupby(heading_data.items(), lambda item: item[0].parents[:-1])
     }
-    expanded_header_data = {path: header_data_per_directory.get(path, []) for path in all_paths}
+    expanded_heading_data = {path: heading_data_per_directory.get(path, []) for path in all_paths}
     toc = ""
-    for dir_path, dir_headers in expanded_header_data.items():
+    for dir_path, dir_headings in expanded_heading_data.items():
         level = 2
-        toc += format_path_header(dir_path, level)
-        for file_headers in dir_headers:
-            # toc += format_path_header(file_path, level + 1)
-            first_header = file_headers[0]
-            toc += f"{'#' * (level + 1)}{first_header.str(0, False)[1:]}{linesep * 2}"
-            toc += format_headers(file_headers, skip, take, False)
+        toc += format_path_heading(dir_path, level)
+        for file_headings in dir_headings:
+            # toc += format_path_heading(file_path, level + 1)
+            first_heading = file_headings[0]
+            toc += f"{'#' * (level + 1)}{first_heading.str(0, False)[1:]}{linesep * 2}"
+            toc += format_headings(file_headings, skip, take, False)
             toc += linesep * 2
     if in_place and target_path and target_path.is_file():
         print(f"Updating {target_path}")
         with open(target_path, "w") as file:
-            file.write(f"{main_header}{linesep * 2}{toc}")
+            file.write(f"{main_heading}{linesep * 2}{toc}")
     else:
-        print(f"{linesep * 2}{main_header}{linesep * 2}{toc}{linesep}")
+        print(f"{linesep * 2}{main_heading}{linesep * 2}{toc}{linesep}")
 
 
-def format_headers(headers: list[Header], skip: int, take: int, section_only: bool) -> str:
+def format_headings(headings: list[Heading], skip: int, take: int, section_only: bool) -> str:
     return linesep.join(
-        header.str(skip, section_only)
-        for header in headers
-        if level_in_range(header.level, skip, take)
+        heading.str(skip, section_only)
+        for heading in headings
+        if level_in_range(heading.level, skip, take)
     )
 
 
@@ -78,5 +78,5 @@ def insert_toc(path: Path, toc: str, toc_regex: str) -> None:
         file.write(new_text)
 
 
-def format_path_header(path: Path, level: int) -> str:
+def format_path_heading(path: Path, level: int) -> str:
     return f"{'#' * level} [{path.name}]({quote(str(path))}){linesep * 2}"

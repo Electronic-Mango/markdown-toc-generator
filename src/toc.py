@@ -3,9 +3,9 @@
 from pathlib import Path
 
 from arguments import parse_arguments
-from header import Header
+from heading import Heading
 from output_toc import handle_file_toc, handle_summary_toc
-from parse_headers import parse_headers_from_file
+from parse_headings import parse_headings_from_file
 
 
 def main():
@@ -15,10 +15,10 @@ def main():
     in_place = verify_in_place(args.in_place, args.force)
     notes_paths = get_all_notes_paths(root, normalized_excludes)
     notes_paths.sort(key=lambda path: (len(path.parents), path))
-    header_data = parse_all_headers(notes_paths)
-    handle_file_toc(header_data, args.skip, args.take, in_place, args.toc_regex)
+    heading_data = parse_all_headings(notes_paths)
+    handle_file_toc(heading_data, args.skip, args.take, in_place, args.toc_regex)
     if args.summary or args.summary_path:
-        handle_summary_toc(header_data, 1, 1, in_place, args.summary_path, args.summary_heading)
+        handle_summary_toc(heading_data, 1, 1, in_place, args.summary_path, args.summary_heading)
 
 
 def normalize(root: Path, path: Path) -> Path:
@@ -50,8 +50,8 @@ def check_excluded_path(path: Path, excluded: Path) -> bool:
     return path == excluded if excluded.is_file() else excluded in path.parents
 
 
-def parse_all_headers(notes_paths: list[Path]) -> dict[Path, list[Header]]:
-    return {path: parse_headers_from_file(path) for path in notes_paths}
+def parse_all_headings(notes_paths: list[Path]) -> dict[Path, list[Heading]]:
+    return {path: parse_headings_from_file(path) for path in notes_paths}
 
 
 if __name__ == "__main__":
