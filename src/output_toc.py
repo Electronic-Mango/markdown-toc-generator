@@ -47,9 +47,9 @@ def handle_summary_toc(
     if in_place and target_path and target_path.is_file():
         print(f"Updating {target_path}")
         with open(target_path, "w") as file:
-            file.write(f"# {main_header}{linesep * 2}{toc}")
+            file.write(f"{main_header}{linesep * 2}{toc}")
     else:
-        print(f"{main_header}:{linesep}{toc}{linesep}")
+        print(f"{linesep * 2}{main_header}{linesep * 2}{toc}{linesep}")
 
 
 def format_headers(headers: list[Header], skip: int, take: int, section_only: bool) -> str:
