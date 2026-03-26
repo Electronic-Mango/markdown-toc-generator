@@ -1,0 +1,24 @@
+[project]
+name = "markdown-toc-generator"
+authors = [{name = "Electronic Mango", email = "78230210+Electronic-Mango@users.noreply.github.com"}]
+version = "1.0.0"
+description = "Python scripts generating Table of Contents from markdown headers."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.14"
+keywords = ["Markdown", "ToC", "toc", "table-of-contents", "Table of Contents"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Electronic-Mango/markdown-toc-generator"
+Documentation = "https://electronic-mango.github.io/markdown-toc-generator"
+Repository = "https://github.com/Electronic-Mango/markdown-toc-generator"

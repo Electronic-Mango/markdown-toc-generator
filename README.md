@@ -7,6 +7,8 @@ The ToC can be printed to console, or inserted/updated into analyzed files.
 
 > **Warning**: Inserting/updating ToC into the files can be destructive, as entire file is read, ToC is inserted/updated, then entire file is overwritten. The remaining contents of the file shouldn't be affected, but be careful.
 
+The project is managed by [uv](https://docs.astral.sh/uv/).
+
 
 ## Usage
 
