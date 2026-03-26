@@ -85,9 +85,9 @@ def parse_arguments() -> Namespace:
         ),
     )
     parser.add_argument(
-        "--summary-header",
+        "--summary-heading",
         type=str,
-        default="Summary",
-        help="main header used for generated summary",
+        default="# Summary:",
+        help="main heading used for generated summary",
     )
     return parser.parse_args()

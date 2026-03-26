@@ -18,7 +18,7 @@ def main():
     header_data = parse_all_headers(notes_paths)
     handle_file_toc(header_data, args.skip, args.take, in_place, args.toc_regex)
     if args.summary or args.summary_path:
-        handle_summary_toc(header_data, 1, 1, in_place, args.summary_path, args.summary_header)
+        handle_summary_toc(header_data, 1, 1, in_place, args.summary_path, args.summary_heading)
 
 
 def normalize(root: Path, path: Path) -> Path:
