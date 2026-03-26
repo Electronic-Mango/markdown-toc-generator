@@ -36,7 +36,18 @@ The default regex used to insert ToC into the file itself is:
 ```
 ^(#[^#].+)$(\s*-.+\n)*\s*
 ```
-It will look for the first heading available and treat the list right after it as the ToC to replace.
+It will look for the first heading available and treat the list right after it as the ToC to replace. So by default the script assumes, that file structure will be something like:
+
+```markdown
+# First heading in file (but doesn't have to be level 1)
+
+- First element of ToC
+  - First subelement of ToC
+- Second element of ToC
+
+Something else, not a list, which won't be modified.
+The rest of the file doesn't matter.
+```
 
 These regexes should include two groups - first looks for the section right before the ToC (which won't be modified in the resulting file), the second looks for the ToC itself (which will be replaced).
 
