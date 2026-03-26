@@ -1,1 +1,85 @@
 # Markdown Table of Contents generator
+
+Basic Markdown Table of Contents generator written in `Python`.
+
+The script generates ToC in a form of a nested list based on headings in Markdown files.
+The ToC can be printed to console, or inserted/updated into analyzed files.
+
+> **Warning**: Inserting/updating ToC into the files can be destructive, as entire file is read, ToC is inserted/updated, then entire file is overwritten. The remaining contents of the file shouldn't be affected, but be careful.
+
+
+## Usage
+
+The main script is `toc.py`, it has a built-in help with all parameters described:
+```bash
+./src/toc.py --help
+```
+
+
+### Arguments
+
+ * **`--root`, `-r`** - **required**, path in which files will be analyzed (recursively)
+ * **`--exclude`, `-e`** - paths to files, or directories, which should be excluded from analysis, **relative to root**
+ * **`--in-place`, `-i`** - update analyzed files with generated ToC, **potentially destructive** and will request confirmation before any changes are done
+ * **`--force`, `-f`** - skip confirmation for potentially destructive operations, like for `--in-place` flag
+ * **`--skip`, `-s`** - skip *n* highest level headings from generated ToC
+ * **`--take`, `-t`** - control how many headings are inserted into the ToC, starting from not-skipped by `--skip` - e.g. `--skip 1 --take 2` will include levels 2-4
+ * **`--toc-regex`** - regex used for updating/inserting ToC into files when using `--in-place` flag
+ * **`--summary`** - generate summary from all analyzed headings into one output - all ToCs with their respective files generated into one Markdown output
+ * **`--summary-path`** - write the generated summary to a file under passed path (`--in-place` flag is still required), **potentially very destructive** as the summary will overwrite everything in that file; this path is automatically excluded; **NOT relative to root**
+ * **`--summary-heading`** - prefix added to the generated summary as the highest level heading
+
+
+### ToC regular expression
+
+The default regex used to insert ToC into the file itself is:
+```
+^(#[^#].+)$(\s*-.+\n)*\s*
+```
+It will look for the first heading available and treat the list right after it as the ToC to replace.
+
+These regexes should include two groups - first looks for the section right before the ToC (which won't be modified in the resulting file), the second looks for the ToC itself (which will be replaced).
+
+
+### Summary
+
+The generated summary will have a structure of:
+
+```markdown
+Summary heading as per `--summary-heading` flag, or "# Summary:" by default
+
+## Link to directory with notes, text is the directory name
+
+### Link to a note, text is taken from the heading level 1 from that note
+
+- [Heading 2 name](link to file and section)
+ - [Heading 3 name](link to file and section)
+- [Heading 2 name](link to file and section)
+```
+
+And so on.
+
+When flags `--in-place` and `--summary-path PATH_TO_FILE` are passed the resulting summary will be written to `PATH_TO_FILE` as is overwritting everything else in the file, so **it can be very destructive**.
+
+
+### Examples
+
+Generate ToC based on files in `notes/stuff` subdirectory, except for `README.md` and files under `ignore/notes`; ignore the highest level heading and include only 2 levels after that; only print to console, without summary:
+```bash
+./src/toc.py -r notes/stuff -e README.md ignore/notes -s 1 -t 2
+```
+
+The same as above, but print a summary as well, with `# Some stuff:` prefix:
+```bash
+./src/toc.py -r notes/stuff -e README.md ignore/notes -s 1 -t 2 --summary --summary-heading '# Some stuff:'
+```
+
+Insert ToC into files, print summary to console:
+```bash
+./src/toc.py -r notes/stuff -e README.md ignore/notes -s 1 -t 2 -i --summary --summary-heading '# Some stuff:'
+```
+
+Write summary to `README.md`:
+```bash
+./src/toc.py -r notes/stuff -e README.md ignore/notes -s 1 -t 2 -i --summary --summary-heading '# Some stuff:' --summary-path README.md
+```
