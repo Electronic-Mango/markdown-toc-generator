@@ -4,7 +4,7 @@ from pathlib import Path
 from re import MULTILINE, sub
 from urllib.parse import quote
 
-from heading import Heading
+from markdown_toc_generator.heading import Heading
 
 
 def handle_file_toc(

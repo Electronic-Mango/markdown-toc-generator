@@ -22,3 +22,14 @@ dependencies = []
 Homepage = "https://github.com/Electronic-Mango/markdown-toc-generator"
 Documentation = "https://electronic-mango.github.io/markdown-toc-generator"
 Repository = "https://github.com/Electronic-Mango/markdown-toc-generator"
+
+[build-system]
+requires = ["uv_build>=0.11.2,<0.12"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "black>=26.3.1",
+    "flake8>=7.3.0",
+    "isort>=8.0.1",
+]

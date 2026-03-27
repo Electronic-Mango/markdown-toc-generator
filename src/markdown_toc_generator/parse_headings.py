@@ -1,7 +1,7 @@
 from pathlib import Path
 from re import search, sub
 
-from heading import Heading
+from markdown_toc_generator.heading import Heading
 
 HEADER_REGEX = r"^(#+) (.+)"
 CODE_BLOCK_REGEX = r"^```"

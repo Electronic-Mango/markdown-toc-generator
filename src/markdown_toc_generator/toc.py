@@ -2,10 +2,10 @@
 
 from pathlib import Path
 
-from arguments import parse_arguments
-from heading import Heading
-from output_toc import handle_file_toc, handle_summary_toc
-from parse_headings import parse_headings_from_file
+from markdown_toc_generator.arguments import parse_arguments
+from markdown_toc_generator.heading import Heading
+from markdown_toc_generator.output_toc import handle_file_toc, handle_summary_toc
+from markdown_toc_generator.parse_headings import parse_headings_from_file
 
 
 def main():
@@ -52,7 +52,3 @@ def check_excluded_path(path: Path, excluded: Path) -> bool:
 
 def parse_all_headings(notes_paths: list[Path]) -> dict[Path, list[Heading]]:
     return {path: parse_headings_from_file(path) for path in notes_paths}
-
-
-if __name__ == "__main__":
-    main()
