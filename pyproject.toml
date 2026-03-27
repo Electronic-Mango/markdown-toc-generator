@@ -1,7 +1,7 @@
 [project]
 name = "markdown-toc-generator"
 authors = [{name = "Electronic Mango", email = "78230210+Electronic-Mango@users.noreply.github.com"}]
-version = "1.0.1"
+version = "1.1.0"
 description = "Python scripts generating Table of Contents from markdown headers."
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -28,7 +28,7 @@ requires = ["uv_build>=0.11.2,<0.12"]
 build-backend = "uv_build"
 
 [project.scripts]
-markdown_toc_generator = "markdown_toc_generator.toc:main"
+markdown-toc-generator = "markdown_toc_generator.toc:main"
 
 [dependency-groups]
 dev = [

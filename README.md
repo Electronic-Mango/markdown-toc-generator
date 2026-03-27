@@ -17,18 +17,18 @@ Package is available through PyPi - [`markdown-toc-generator`](https://pypi.org/
 You can install it directly:
 ```bash
 pip install markdown-toc-generator
-markdown_toc_generator --help
+markdown-toc-generator --help
 ```
 
 Run through isolated environment like uv, or pipx:
 ```bash
 pipx run markdown-toc-generator --help
-uvx markdown_toc_generator --help
+uvx markdown-toc-generator --help
 ```
 
 Or download this repo and run the main script directly:
 ```bash
-./src/markdown_toc_generator/toc.py --help
+./src/markdown-toc-generator/toc.py --help
 ```
 
 
