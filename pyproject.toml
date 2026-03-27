@@ -1,7 +1,7 @@
 [project]
 name = "markdown-toc-generator"
 authors = [{name = "Electronic Mango", email = "78230210+Electronic-Mango@users.noreply.github.com"}]
-version = "1.1.0"
+version = "1.1.1"
 description = "Python scripts generating Table of Contents from markdown headers."
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -20,7 +20,7 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/Electronic-Mango/markdown-toc-generator"
-Documentation = "https://electronic-mango.github.io/markdown-toc-generator"
+Documentation = "https://github.com/Electronic-Mango/markdown-toc-generator"
 Repository = "https://github.com/Electronic-Mango/markdown-toc-generator"
 
 [build-system]
