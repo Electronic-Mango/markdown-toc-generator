@@ -12,9 +12,23 @@ The project is managed by [uv](https://docs.astral.sh/uv/).
 
 ## Usage
 
-The main script is `toc.py`, it has a built-in help with all parameters described:
+Package is available through PyPi - [`markdown-toc-generator`](https://pypi.org/project/markdown-toc-generator/).
+
+You can install it directly:
 ```bash
-./src/toc.py --help
+pip install markdown-toc-generator
+markdown_toc_generator --help
+```
+
+Run through isolated environment like uv, or pipx:
+```bash
+pipx run markdown-toc-generator --help
+uvx markdown_toc_generator --help
+```
+
+Or download this repo and run the main script directly:
+```bash
+./src/markdown_toc_generator/toc.py --help
 ```
 
 
