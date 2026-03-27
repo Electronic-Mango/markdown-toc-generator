@@ -52,3 +52,7 @@ def check_excluded_path(path: Path, excluded: Path) -> bool:
 
 def parse_all_headings(notes_paths: list[Path]) -> dict[Path, list[Heading]]:
     return {path: parse_headings_from_file(path) for path in notes_paths}
+
+
+if __name__ == "__main__":
+    main()

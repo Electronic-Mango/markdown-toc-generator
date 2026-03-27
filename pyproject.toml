@@ -27,6 +27,9 @@ Repository = "https://github.com/Electronic-Mango/markdown-toc-generator"
 requires = ["uv_build>=0.11.2,<0.12"]
 build-backend = "uv_build"
 
+[project.scripts]
+markdown_toc_generator = "markdown_toc_generator.toc:main"
+
 [dependency-groups]
 dev = [
     "black>=26.3.1",
