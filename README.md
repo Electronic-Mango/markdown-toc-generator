@@ -35,7 +35,7 @@ Or download this repo and run the main script directly:
 ### Arguments
 
  * **`--root`, `-r`** - **required**, path in which files will be analyzed (recursively)
- * **`--exclude`, `-e`** - paths to files, or directories, which should be excluded from analysis, **relative to root**
+ * **`--exclude`, `-e`** - paths to files, or directories, which should be excluded from analysis
  * **`--in-place`, `-i`** - update analyzed files with generated ToC, **potentially destructive** and will request confirmation before any changes are done
  * **`--force`, `-f`** - skip confirmation for potentially destructive operations, like for `--in-place` flag
  * **`--skip`, `-s`** - skip *n* highest level headings from generated ToC
@@ -43,7 +43,7 @@ Or download this repo and run the main script directly:
  * **`--toc-regex`** - regex used for updating/inserting ToC into files when using `--in-place` flag
  * **`--summary`** - generate summary from all analyzed headings into one output - all ToCs with their respective files generated into one Markdown output
  * **`--summary-only`** - analyze all files, but print/write only the summary
- * **`--summary-path`** - write the generated summary to a file under passed path (`--in-place` flag is still required), **potentially very destructive** as the summary will overwrite everything in that file; this path is automatically excluded; **NOT relative to root**
+ * **`--summary-path`** - write the generated summary to a file under passed path (`--in-place` flag is still required), **potentially very destructive** as the summary will overwrite everything in that file; this path is automatically excluded
  * **`--summary-heading`** - prefix added to the generated summary as the highest level heading
 
 

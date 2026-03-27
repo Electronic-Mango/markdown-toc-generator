@@ -24,6 +24,7 @@ def handle_file_toc(
 
 
 def handle_summary_toc(
+    root: Path,
     heading_data: dict[Path, list[Heading]],
     in_place: bool,
     target_path: Path | None,
@@ -38,24 +39,37 @@ def handle_summary_toc(
     expanded_heading_data = {path: heading_data_per_directory.get(path, []) for path in all_paths}
     toc = ""
     for dir_path, dir_headings in expanded_heading_data.items():
+        if root not in dir_path.parents:
+            continue
         level = 2
-        toc += format_path_heading(dir_path, level)
+        toc += format_path_heading(root, dir_path, level, target_path is None)
         for file_headings in dir_headings:
             # toc += format_path_heading(file_path, level + 1)
             first_heading = file_headings[0]
-            toc += f"{'#' * (level + 1)}{first_heading.str(0, False)[1:]}{linesep * 2}"
-            toc += format_headings(file_headings, 1, 1, False)
+            toc += format_note_heading(first_heading, level, target_path)
+            toc += format_headings(file_headings, 1, 1, target_path is None, target_path)
             toc += linesep * 2
-    if in_place and target_path and target_path.is_file():
-        print(f"Updating {target_path}")
-        target_path.write_text(f"{main_heading}{linesep * 2}{toc}")
+    summary = f"{main_heading}{linesep * 2}{toc}"
+    if in_place and target_path:
+        existing_target_text = target_path.read_text()
+        if summary.strip() == existing_target_text.strip():
+            print(f"No changes made to: '{target_path}'")
+        else:
+            print(f"Updating summary in: '{target_path}'")
+            target_path.write_text(summary)
     else:
-        print(f"{linesep * 2}{main_heading}{linesep * 2}{toc}{linesep}")
+        print(f"{linesep * 2}{summary}")
 
 
-def format_headings(headings: list[Heading], skip: int, take: int, section_only: bool) -> str:
+def format_headings(
+    headings: list[Heading],
+    skip: int,
+    take: int,
+    section_only: bool,
+    relative_to: Path | None = None,
+) -> str:
     return linesep.join(
-        heading.str(skip, section_only)
+        heading.str(skip, section_only, relative_to)
         for heading in headings
         if level_in_range(heading.level, skip, take)
     )
@@ -69,13 +83,20 @@ def insert_toc(path: Path, toc: str, toc_regex: str) -> None:
     toc = (linesep * 2) + toc + (linesep * 3)
     text = path.read_text()
     if toc in text:
-        print(f"No changes made to: {path}")
+        print(f"No changes made to: '{path}'")
         return
-    print(f"Updating ToC in: {path}")
+    print(f"Updating ToC in: '{path}'")
     sub_regex = rf"\1{toc}"
     new_text = sub(toc_regex, sub_regex, text, count=1, flags=MULTILINE)
     path.write_text(new_text)
 
 
-def format_path_heading(path: Path, level: int) -> str:
-    return f"{'#' * level} [{path.name}]({quote(str(path))}){linesep * 2}"
+def format_path_heading(root: Path, path: Path, level: int, section_only: bool) -> str:
+    if section_only:
+        return f"{'#' * level} {path.name}{linesep * 2}"
+    relative_path = path.resolve().relative_to(root.resolve(), walk_up=True)
+    return f"{'#' * level} [{path.name}]({quote(str(relative_path))}){linesep * 2}"
+
+
+def format_note_heading(heading: Heading, level: int, target_path: Path | None = None) -> str:
+    return f"{'#' * (level + 1)}{heading.str(0, target_path is None, target_path)[1:]}{linesep * 2}"
