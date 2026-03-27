@@ -8,7 +8,11 @@ from markdown_toc_generator.heading import Heading
 
 
 def handle_file_toc(
-    heading_data: dict[Path, list[Heading]], skip: int, take: int, in_place: bool, toc_regex: str
+    heading_data: dict[Path, list[Heading]],
+    skip: int,
+    take: int,
+    in_place: bool,
+    toc_regex: str,
 ) -> None:
     for path, headings in heading_data.items():
         if not (toc := format_headings(headings, skip, take, True)):
@@ -21,8 +25,6 @@ def handle_file_toc(
 
 def handle_summary_toc(
     heading_data: dict[Path, list[Heading]],
-    skip: int,
-    take: int,
     in_place: bool,
     target_path: Path | None,
     main_heading: str,
@@ -42,12 +44,11 @@ def handle_summary_toc(
             # toc += format_path_heading(file_path, level + 1)
             first_heading = file_headings[0]
             toc += f"{'#' * (level + 1)}{first_heading.str(0, False)[1:]}{linesep * 2}"
-            toc += format_headings(file_headings, skip, take, False)
+            toc += format_headings(file_headings, 1, 1, False)
             toc += linesep * 2
     if in_place and target_path and target_path.is_file():
         print(f"Updating {target_path}")
-        with open(target_path, "w") as file:
-            file.write(f"{main_heading}{linesep * 2}{toc}")
+        target_path.write_text(f"{main_heading}{linesep * 2}{toc}")
     else:
         print(f"{linesep * 2}{main_heading}{linesep * 2}{toc}{linesep}")
 
@@ -66,16 +67,14 @@ def level_in_range(level: int, skip: int, take: int) -> bool:
 
 def insert_toc(path: Path, toc: str, toc_regex: str) -> None:
     toc = (linesep * 2) + toc + (linesep * 3)
-    with open(path, "r") as file:
-        text = file.read()
+    text = path.read_text()
     if toc in text:
         print(f"No changes made to: {path}")
         return
     print(f"Updating ToC in: {path}")
     sub_regex = rf"\1{toc}"
     new_text = sub(toc_regex, sub_regex, text, count=1, flags=MULTILINE)
-    with open(path, "w") as file:
-        file.write(new_text)
+    path.write_text(new_text)
 
 
 def format_path_heading(path: Path, level: int) -> str:

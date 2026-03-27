@@ -9,7 +9,7 @@ def parse_arguments() -> Namespace:
         description=(
             "Markdown Table-of-Contents generator, print them to console, "
             "or insert them into Markdown files themselves"
-        )
+        ),
     )
     parser.add_argument(
         "-r",
@@ -73,7 +73,9 @@ def parse_arguments() -> Namespace:
         ),
     )
     parser.add_argument(
-        "--summary", action="store_true", help="generate summary of all analyzed files"
+        "--summary",
+        action="store_true",
+        help="generate summary of all analyzed files",
     )
     parser.add_argument(
         "--summary-path",

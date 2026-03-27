@@ -32,7 +32,21 @@ markdown-toc-generator = "markdown_toc_generator.toc:main"
 
 [dependency-groups]
 dev = [
-    "black>=26.3.1",
-    "flake8>=7.3.0",
-    "isort>=8.0.1",
+    "ruff>=0.15.8",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D",  # Remove if I even add docstrings to the project (probably won't).
+    "COM812",  # Can cause conflicts with the formatter.
+    "ERA",
+    "FBT",
+    "T20",  # TODO: Look for a better way of displaying output.
+    "TC001",
+    "TC002",
+    "TC003",
 ]

@@ -8,7 +8,7 @@ from markdown_toc_generator.output_toc import handle_file_toc, handle_summary_to
 from markdown_toc_generator.parse_headings import parse_headings_from_file
 
 
-def main():
+def main() -> None:
     args = parse_arguments()
     root = args.root.absolute()
     normalized_excludes = get_all_excludes(root, args.exclude, args.summary_path)
@@ -18,7 +18,7 @@ def main():
     heading_data = parse_all_headings(notes_paths)
     handle_file_toc(heading_data, args.skip, args.take, in_place, args.toc_regex)
     if args.summary or args.summary_path:
-        handle_summary_toc(heading_data, 1, 1, in_place, args.summary_path, args.summary_heading)
+        handle_summary_toc(heading_data, in_place, args.summary_path, args.summary_heading)
 
 
 def normalize(root: Path, path: Path) -> Path:
@@ -26,7 +26,7 @@ def normalize(root: Path, path: Path) -> Path:
 
 
 def get_all_excludes(root: Path, exclude: list[Path], readme: Path | None) -> set[Path]:
-    return {normalize(root, path) for path in exclude + [readme] if path}
+    return {normalize(root, path) for path in [*exclude, readme] if path}
 
 
 def verify_in_place(in_place: bool, force: bool) -> bool:
@@ -34,7 +34,7 @@ def verify_in_place(in_place: bool, force: bool) -> bool:
         return in_place
     return input(
         "Changing files in-place can lead to data loss, use at your own risk. "
-        "Continue with changes in-place? [y/n] "
+        "Continue with changes in-place? [y/n] ",
     ).lower() in ("y", "yes")
 
 

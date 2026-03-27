@@ -8,9 +8,7 @@ CODE_BLOCK_REGEX = r"^```"
 
 
 def parse_headings_from_file(path: Path) -> list[Heading]:
-    with open(path, "r") as file:
-        text = file.readlines()
-    headings = get_all_headings(text)
+    headings = get_all_headings(path.read_text().splitlines())
     return [Heading(level, name, path, create_section_link(name)) for level, name in headings]
 
 
