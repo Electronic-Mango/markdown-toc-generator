@@ -42,6 +42,7 @@ Or download this repo and run the main script directly:
  * **`--take`, `-t`** - control how many headings are inserted into the ToC, starting from not-skipped by `--skip` - e.g. `--skip 1 --take 2` will include levels 2-4
  * **`--toc-regex`** - regex used for updating/inserting ToC into files when using `--in-place` flag
  * **`--summary`** - generate summary from all analyzed headings into one output - all ToCs with their respective files generated into one Markdown output
+ * **`--summary-only`** - analyze all files, but print/write only the summary
  * **`--summary-path`** - write the generated summary to a file under passed path (`--in-place` flag is still required), **potentially very destructive** as the summary will overwrite everything in that file; this path is automatically excluded; **NOT relative to root**
  * **`--summary-heading`** - prefix added to the generated summary as the highest level heading
 

@@ -78,6 +78,11 @@ def parse_arguments() -> Namespace:
         help="generate summary of all analyzed files",
     )
     parser.add_argument(
+        "--summary-only",
+        action="store_true",
+        help="analyze all files, but print/write only summary",
+    )
+    parser.add_argument(
         "--summary-path",
         type=Path,
         help=(

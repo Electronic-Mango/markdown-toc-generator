@@ -16,8 +16,9 @@ def main() -> None:
     notes_paths = get_all_notes_paths(root, normalized_excludes)
     notes_paths.sort(key=lambda path: (len(path.parents), path))
     heading_data = parse_all_headings(notes_paths)
-    handle_file_toc(heading_data, args.skip, args.take, in_place, args.toc_regex)
-    if args.summary or args.summary_path:
+    if not args.summary_only:
+        handle_file_toc(heading_data, args.skip, args.take, in_place, args.toc_regex)
+    if args.summary or args.summary_only or args.summary_path:
         handle_summary_toc(heading_data, in_place, args.summary_path, args.summary_heading)
 
 
