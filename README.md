@@ -1,5 +1,6 @@
 # Markdown Table of Contents generator
 
+[![CodeQL](https://github.com/Electronic-Mango/markdown-toc-generator/actions/workflows/codeql.yml/badge.svg)](https://github.com/Electronic-Mango/markdown-toc-generator/actions/workflows/codeql.yml)
 [![Ruff](https://github.com/Electronic-Mango/markdown-toc-generator/actions/workflows/ruff.yml/badge.svg)](https://github.com/Electronic-Mango/markdown-toc-generator/actions/workflows/ruff.yml)
 [![PyPI - Version](https://img.shields.io/pypi/v/markdown-toc-generator)](https://pypi.org/project/markdown-toc-generator/)
 
