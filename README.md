@@ -1,5 +1,8 @@
 # Markdown Table of Contents generator
 
+[![Ruff](https://github.com/Electronic-Mango/markdown-toc-generator/actions/workflows/ruff.yml/badge.svg)](https://github.com/Electronic-Mango/markdown-toc-generator/actions/workflows/ruff.yml)
+[![PyPI - Version](https://img.shields.io/pypi/v/markdown-toc-generator)](https://pypi.org/project/markdown-toc-generator/)
+
 Basic Markdown Table of Contents generator written in `Python`.
 
 The script generates ToC in a form of a nested list based on headings in Markdown files.
