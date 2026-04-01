@@ -95,6 +95,16 @@ def parse_arguments() -> Namespace:
         ),
     )
     parser.add_argument(
+        "--skip-heading-regex",
+        type=str,
+        default=[],
+        nargs="*",
+        help=(
+            "headings matching these regexes will not be included in ToC;"
+            "regex doesn't have to match entire heading, only part of it"
+        ),
+    )
+    parser.add_argument(
         "--summary",
         action="store_true",
         help="generate summary of all analyzed files",

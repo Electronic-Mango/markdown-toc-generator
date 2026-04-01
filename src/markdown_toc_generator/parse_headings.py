@@ -7,12 +7,12 @@ HEADING_REGEX = r"^(#+) (.+)"
 CODE_BLOCK_REGEX = r"^```"
 
 
-def parse_headings_from_file(path: Path) -> list[Heading]:
-    headings = get_all_headings(path.read_text().splitlines())
+def parse_headings_from_file(path: Path, ignore: list[str]) -> list[Heading]:
+    headings = get_all_headings(path.read_text().splitlines(), ignore)
     return [Heading(level, name, path, create_section_link(name)) for level, name in headings]
 
 
-def get_all_headings(lines: list[str]) -> list[tuple[int, str]]:
+def get_all_headings(lines: list[str], ignore: list[str]) -> list[tuple[int, str]]:
     headings = []
     is_code_block = False
     for line in lines:
@@ -22,8 +22,10 @@ def get_all_headings(lines: list[str]) -> list[tuple[int, str]]:
             continue
         if match := search(HEADING_REGEX, line):
             level = len(match.group(1))
-            name = strip_link_from_name(match.group(2))
-            headings.append((level, name))
+            name = match.group(2)
+            if any(search(regex, name) for regex in ignore):
+                continue
+            headings.append((level, strip_link_from_name(name)))
     return headings
 
 

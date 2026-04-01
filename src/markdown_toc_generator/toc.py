@@ -19,7 +19,7 @@ def main() -> None:
         normalized_excludes = get_all_excludes(root, args.exclude, summary_path)
         notes_paths = get_all_notes_paths(root, normalized_excludes)
     notes_paths.sort(key=lambda path: (len(path.parents), path))
-    heading_data = parse_all_headings(notes_paths)
+    heading_data = parse_all_headings(notes_paths, args.skip_heading_regex)
     if not args.summary_only:
         toc_regex = full_toc_heading_regex(args.toc_heading_regex) or args.toc_regex
         handle_file_toc(heading_data, args.skip, args.take, in_place, toc_regex)
@@ -56,8 +56,8 @@ def check_excluded_path(path: Path, excluded: Path) -> bool:
     return path == excluded if excluded.is_file() else excluded in path.parents
 
 
-def parse_all_headings(notes_paths: list[Path]) -> dict[Path, list[Heading]]:
-    return {path: parse_headings_from_file(path) for path in notes_paths}
+def parse_all_headings(notes_paths: list[Path], ignore: list[str]) -> dict[Path, list[Heading]]:
+    return {path: parse_headings_from_file(path, ignore) for path in notes_paths}
 
 
 def handle_summary_path(path: Path | None) -> Path | None:
