@@ -21,8 +21,14 @@ def get_all_headings(lines: list[str]) -> list[tuple[int, str]]:
         if is_code_block:
             continue
         if match := search(HEADER_REGEX, line):
-            headings.append((len(match.group(1)), match.group(2)))
+            level = len(match.group(1))
+            name = strip_link_from_name(match.group(2))
+            headings.append((level, name))
     return headings
+
+
+def strip_link_from_name(name: str) -> str:
+    return sub(r"(?:\[([^]]+)\]\([^)]+\))", r"\1", name)
 
 
 def create_section_link(name: str) -> str:
