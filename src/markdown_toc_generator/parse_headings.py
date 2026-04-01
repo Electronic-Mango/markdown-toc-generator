@@ -3,7 +3,7 @@ from re import search, sub
 
 from markdown_toc_generator.heading import Heading
 
-HEADER_REGEX = r"^(#+) (.+)"
+HEADING_REGEX = r"^(#+) (.+)"
 CODE_BLOCK_REGEX = r"^```"
 
 
@@ -20,7 +20,7 @@ def get_all_headings(lines: list[str]) -> list[tuple[int, str]]:
             is_code_block = not is_code_block
         if is_code_block:
             continue
-        if match := search(HEADER_REGEX, line):
+        if match := search(HEADING_REGEX, line):
             level = len(match.group(1))
             name = strip_link_from_name(match.group(2))
             headings.append((level, name))

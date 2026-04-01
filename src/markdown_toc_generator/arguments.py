@@ -18,7 +18,8 @@ def parse_arguments() -> Namespace:
         default=Path(),
         help="set root path for all operations, by default current path is used",
     )
-    parser.add_argument(
+    sources_group = parser.add_mutually_exclusive_group()
+    sources_group.add_argument(
         "-e",
         "--exclude",
         type=Path,
@@ -26,11 +27,22 @@ def parse_arguments() -> Namespace:
         default=[],
         help=(
             "paths (relative to root) which should be excluded from analysis, "
-            "can be single files, can be entire directories"
+            "can be single files, can be entire directories;"
+            "use either '--exclude', or '--include'"
+        ),
+    )
+    sources_group.add_argument(
+        "-i",
+        "--include",
+        type=Path,
+        nargs="*",
+        default=[],
+        help=(
+            "specify paths to files which should be analyzed;use either '--include', or '--exclude'"
         ),
     )
     parser.add_argument(
-        "-i",
+        "-p",
         "--in-place",
         action="store_true",
         help=(
@@ -62,7 +74,8 @@ def parse_arguments() -> Namespace:
             "relative to --take ('--skip 1 --take 3' results in levels 2-4 to be included in ToC)"
         ),
     )
-    parser.add_argument(
+    in_place_regex_group = parser.add_mutually_exclusive_group()
+    in_place_regex_group.add_argument(
         "--toc-regex",
         default=TOC_REGEX,
         help=(
@@ -70,6 +83,15 @@ def parse_arguments() -> Namespace:
             "first capture group looks for a 'prefix' string for the ToC (which is preserved), "
             "the second one looks for the ToC itself (which will be replaced), "
             f"'{TOC_REGEX}' used by default"
+        ),
+    )
+    in_place_regex_group.add_argument(
+        "--toc-heading-regex",
+        default=None,
+        help=(
+            "regex used to insert ToC into file with --in-place, "
+            "this regex should match only the heading after which ToC should be inserted,"
+            "not the entire ToC text block; input regex will be wrapped as '^<regex>$'"
         ),
     )
     parser.add_argument(

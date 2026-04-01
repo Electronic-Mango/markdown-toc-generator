@@ -12,13 +12,17 @@ def main() -> None:
     args = parse_arguments()
     root = args.root.resolve()
     summary_path = handle_summary_path(args.summary_path)
-    normalized_excludes = get_all_excludes(root, args.exclude, summary_path)
     in_place = verify_in_place(args.in_place, args.force)
-    notes_paths = get_all_notes_paths(root, normalized_excludes)
+    if args.include:
+        notes_paths = [path.resolve() for path in args.include]
+    else:
+        normalized_excludes = get_all_excludes(root, args.exclude, summary_path)
+        notes_paths = get_all_notes_paths(root, normalized_excludes)
     notes_paths.sort(key=lambda path: (len(path.parents), path))
     heading_data = parse_all_headings(notes_paths)
     if not args.summary_only:
-        handle_file_toc(heading_data, args.skip, args.take, in_place, args.toc_regex)
+        toc_regex = full_toc_heading_regex(args.toc_heading_regex) or args.toc_regex
+        handle_file_toc(heading_data, args.skip, args.take, in_place, toc_regex)
     if args.summary or args.summary_only or summary_path:
         handle_summary_toc(root, heading_data, in_place, summary_path, args.summary_heading)
 
@@ -61,6 +65,12 @@ def handle_summary_path(path: Path | None) -> Path | None:
         return path
     print(f"Path '{path}' is a directory, summary will not be written")
     return None
+
+
+def full_toc_heading_regex(regex: str | None) -> str | None:
+    if regex is None:
+        return None
+    return rf"^({regex})$(\s*-.+\n)*\s*"
 
 
 if __name__ == "__main__":
